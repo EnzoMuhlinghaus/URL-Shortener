@@ -9,8 +9,27 @@ use Illuminate\Http\Request;
 class LinksController extends Controller
 {
 
-  public function redirect($id){
-    $link = Link::findOrFail($id);
+  /**
+   * Generate unique ID
+   * @param $length
+   * @return string
+   */
+  private function randString($length) {
+    $char = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    $char = str_shuffle($char);
+    for($i = 0, $rand = '', $l = strlen($char) - 1; $i < $length; $i ++) {
+      $rand .= $char{mt_rand(0, $l)};
+    }
+    return $rand;
+  }
+
+  /**
+   * Redirect to the URL
+   * @param $uid
+   * @return RedirectResponse
+   */
+  public function redirect($uid){
+    $link = Link::where("uid", $uid)->first();
 
     return new RedirectResponse($link->url, 301);
   }
@@ -35,8 +54,14 @@ class LinksController extends Controller
    */
   public function store(Request $request)
   {
-    $link = Link::create($request->all());
+    $uid = $this->randString(5);
+    $url = $request["url"];
 
-    return response(url("/r") . "/" . $link->id, 201);
+    $link = Link::create([
+      "url" => $url,
+      "uid" => $uid
+    ]);
+
+    return response(url("/") . "/" . $link->uid, 201);
   }
 }

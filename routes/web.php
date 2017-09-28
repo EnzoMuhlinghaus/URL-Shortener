@@ -11,8 +11,4 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('r/{id}', 'LinksController@redirect')->where('id', '[0-9]+');
+Route::get('/{uid}', 'LinksController@redirect');
