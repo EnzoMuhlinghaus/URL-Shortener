@@ -57,10 +57,10 @@ class LinksController extends Controller
     $uid = $this->randString(5);
     $url = $request["url"];
 
-    $link = Link::create([
-      "url" => $url,
-      "uid" => $uid
-    ]);
+    $link = Link::firstOrCreate(
+      ["url" => $url,],
+      ["uid" => $uid]
+    );
 
     return response(url("/") . "/" . $link->uid, 201);
   }
