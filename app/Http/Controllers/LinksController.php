@@ -37,19 +37,6 @@ class LinksController extends Controller
   {
     $link = Link::create($request->all());
 
-    return response($link->id, 201);
-  }
-
-  /**
-   * Display the specified resource.
-   * GET /links/{id}
-   *
-   * @param  \App\Link $link
-   * @return \Illuminate\Http\Response
-   */
-  public function show(Link $link)
-  {
-    $linkShown = Link::findOrFail($link);
-    return response($linkShown, 200);
+    return response(url("/r") . "/" . $link->id, 201);
   }
 }
