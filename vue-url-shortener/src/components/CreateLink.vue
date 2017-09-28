@@ -9,8 +9,8 @@
 
     <div class="ui floating message" v-show="isDone">
       <div class="field">
-        <label for="url_shortened">Et voilà !</label>
-        <input type="text" id="url_shortened">
+        <label for="shortened_url">Et voilà !</label>
+        <input type="text" id="shortened_url" :value="shortenedUrl">
       </div>
     </div>
   </div>
@@ -24,7 +24,8 @@
     data: () => {
       return {
         url: '',
-        isDone: 0
+        isDone: 0,
+        shortenedUrl: ''
       }
     },
     methods: {
@@ -32,7 +33,9 @@
         let urlToSent = {'url': this.url}
 
         axios.post('http://url-shortener.dev/api/links', urlToSent).then((response) => {
-          console.log(response.data)
+          this.shortenedUrl = response.data
+          console.log(this.shortenedUrl)
+          this.isDone = 1
         }).catch((error) => {
           console.log(error)
         })
