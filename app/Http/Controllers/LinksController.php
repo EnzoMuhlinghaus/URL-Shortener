@@ -9,6 +9,14 @@ use Illuminate\Http\Request;
 class LinksController extends Controller
 {
 
+  private function checkUrl($urlStr){
+    $parsed = parse_url($urlStr);
+    if (empty($parsed['scheme'])) {
+      $urlStr = 'http://' . ltrim($urlStr, '/');
+    }
+    return $urlStr;
+  }
+
   /**
    * Generate unique ID
    * @param $length
@@ -55,7 +63,7 @@ class LinksController extends Controller
   public function store(Request $request)
   {
     $uid = $this->randString(5);
-    $url = $request["url"];
+    $url = $this->checkUrl($request["url"]);
 
     $link = Link::firstOrCreate(
       ["url" => $url,],
