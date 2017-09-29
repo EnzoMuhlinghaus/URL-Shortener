@@ -8,30 +8,7 @@ use Illuminate\Http\Request;
 
 class LinksController extends Controller
 {
-
-  private function checkUrl($urlStr){
-    $parsed = parse_url($urlStr);
-    if (empty($parsed['scheme'])) {
-      $urlStr = 'http://' . ltrim($urlStr, '/');
-    }
-    return $urlStr;
-  }
-
-  /**
-   * Generate unique ID
-   * @param $length
-   * @return string
-   */
-  private function randString($length) {
-    $char = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    $char = str_shuffle($char);
-    for($i = 0, $rand = '', $l = strlen($char) - 1; $i < $length; $i ++) {
-      $rand .= $char{mt_rand(0, $l)};
-    }
-    return $rand;
-  }
-
-  /**
+   /**
    * Redirect to the URL
    * @param $uid
    * @return RedirectResponse
@@ -62,8 +39,7 @@ class LinksController extends Controller
    */
   public function store(Request $request)
   {
-    $uid = $this->randString(5);
-    $url = $this->checkUrl($request["url"]);
+    $url = $request["url"];
 
     if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
       return response('bad parameters', 400);
@@ -71,7 +47,7 @@ class LinksController extends Controller
 
     $link = Link::firstOrCreate(
       ["url" => $url,],
-      ["uid" => $uid]
+      ["uid" => 0]
     );
 
     return response(url("/") . "/" . $link->uid, 201);

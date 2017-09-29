@@ -4,7 +4,7 @@
 
     <div class="field" :class="error">
       <label for="url">Url à raccourcir</label>
-      <input type="text" placeholder="http://..." id="url" v-model="url" @keyup="clear">
+      <input type="text" placeholder="http://..." id="url" v-model="url" @keyup="clear" @click="http">
     </div>
 
     <button class="ui primary button" :class="loading" @click="submit">Générer URL</button>
@@ -33,6 +33,11 @@
       }
     },
     methods: {
+      http () {
+        if (!this.url.includes('http://')) {
+          this.url = 'http://'
+        }
+      },
       clear () {
         if (this.url === '') {
           this.error = ''
