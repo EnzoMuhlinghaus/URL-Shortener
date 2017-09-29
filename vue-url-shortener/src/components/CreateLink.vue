@@ -1,11 +1,13 @@
 <template>
   <div class="link-create ui form">
-    <div class="field">
+    <div class="ui red message" v-show="error">URL Invalide !</div>
+
+    <div class="field" :class="error">
       <label for="url">Url à raccourcir</label>
-      <input type="text" placeholder="http://..." id="url" v-model="url">
+      <input type="text" placeholder="http://..." id="url" v-model="url" @keyup="clear">
     </div>
 
-    <button class="ui primary button" @click="submit">Générer URL</button>
+    <button class="ui primary button" :class="loading" @click="submit">Générer URL</button>
 
     <div class="ui floating message" v-show="isDone">
       <div class="field">
@@ -25,20 +27,35 @@
       return {
         url: '',
         isDone: 0,
-        shortenedUrl: ''
+        shortenedUrl: '',
+        loading: '',
+        error: ''
       }
     },
     methods: {
+      clear () {
+        if (this.url === '') {
+          this.error = ''
+        }
+      },
       submit () {
-        let urlToSent = {'url': this.url}
+        if (this.url !== '') {
+          this.error = ''
+          this.loading = 'loading'
+          let urlToSent = {'url': this.url}
 
-        axios.post('http://url-shortener.dev/api/links', urlToSent).then((response) => {
-          this.shortenedUrl = response.data
-          console.log(this.shortenedUrl)
-          this.isDone = 1
-        }).catch((error) => {
-          console.log(error)
-        })
+          axios.post('http://url-shortener.dev/api/links', urlToSent).then((response) => {
+            this.loading = ''
+            this.shortenedUrl = response.data
+            this.isDone = 1
+          }).catch(() => {
+            this.loading = ''
+            this.error = 'error'
+            this.isDone = 0
+          })
+        } else {
+          this.error = 'error'
+        }
       }
     }
   }

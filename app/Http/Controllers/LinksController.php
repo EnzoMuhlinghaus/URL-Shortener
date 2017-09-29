@@ -65,6 +65,10 @@ class LinksController extends Controller
     $uid = $this->randString(5);
     $url = $this->checkUrl($request["url"]);
 
+    if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
+      return response('bad parameters', 400);
+    }
+
     $link = Link::firstOrCreate(
       ["url" => $url,],
       ["uid" => $uid]
